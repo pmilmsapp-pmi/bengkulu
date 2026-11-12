@@ -26,3 +26,4 @@ data/
 # OS/temp
 *.tmp
 *.swp
+repomix-output*.xml

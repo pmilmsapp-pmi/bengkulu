@@ -10,6 +10,12 @@ app.use(helmet({
   contentSecurityPolicy: false,
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
+app.use(express.json({ limit: "1mb" }));
+
+app.get("/api/status", (req, res) => {
+  res.set("Cache-Control", "no-store");
+  res.json({ aktif: true, port, waktu: new Date().toISOString() });
+});
 
 app.get("/api/konfigurasi-publik", (req, res) => {
   res.set("Cache-Control", "no-store");
@@ -23,11 +29,17 @@ app.get("/api/konfigurasi-publik", (req, res) => {
   });
 });
 
-app.use(express.static(__dirname, { extensions: ["html"] }));
+app.use(express.static(__dirname, {
+  extensions: ["html"],
+  etag: true,
+  maxAge: process.env.NODE_ENV === "production" ? "1h" : 0
+}));
+
 app.get("*", (req, res) => {
   res.status(404).sendFile(path.join(__dirname, "index.html"));
 });
 
 app.listen(port, () => {
-  console.log(`PMI Kota Bengkulu: http://localhost:${port}`);
+  console.log(`PMI Kota Bengkulu aktif: http://localhost:${port}`);
+  console.log(`Status server: http://localhost:${port}/api/status`);
 });
