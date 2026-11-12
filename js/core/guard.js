@@ -1,0 +1,1 @@
+import{ambilSesi,ambilProfil}from"./auth.js";export async function wajibLogin(peran=[]){const sesi=await ambilSesi();if(!sesi){location.replace("../login.html");return null}const profil=await ambilProfil();if(peran.length&&!peran.includes(profil?.peran)){location.replace("../index.html");return null}return{sesi,profil};}

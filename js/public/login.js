@@ -1,0 +1,5 @@
+import{masuk,ambilSesi}from"../core/auth.js";
+const form=document.querySelector("#form-login");const status=document.querySelector("[data-status]");const tombol=document.querySelector("[data-submit]");
+function pesan(teks,gagal=false){status.textContent=teks;status.style.color=gagal?"#b91c1c":""}
+(async()=>{try{const sesi=await ambilSesi();if(sesi)location.replace("admin/index.html")}catch(e){console.warn("Pemeriksaan sesi gagal",e)}})();
+form.addEventListener("submit",async e=>{e.preventDefault();if(!form.reportValidity())return;const email=form.elements.email.value.trim().toLowerCase();const password=form.elements.password.value;tombol.disabled=true;pesan("Memeriksa akun...");try{await masuk(email,password);pesan("Login berhasil. Membuka dashboard...");location.replace("admin/index.html")}catch(err){pesan(err.message||"Login gagal.",true);tombol.disabled=false}});
